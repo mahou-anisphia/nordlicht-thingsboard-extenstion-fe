@@ -1,6 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&family=Work+Sans:ital,wght@0,300;0,400;1,200;1,300&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  font-family: "Raleway", sans-serif;
+  font-family: "Work Sans", sans-serif;
+}
 
 /* Ant Design compatibility */
 *,
@@ -19,4 +25,26 @@
 
 .ant-layout-header {
   padding: 0 24px;
+}
+:root {
+  --viettel-red: #ea0828;
+  --viettel-red-light: #ff1f3e;
+  --viettel-red-dark: #d10722;
+  --viettel-red-bg: #fff1f3;
+}
+
+body {
+  background-color: #ffffff;
+}
+
+.ant-btn-primary {
+  background-color: var(--viettel-red);
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--viettel-red-light) !important;
+}
+
+.ant-btn-primary:active {
+  background-color: var(--viettel-red-dark) !important;
 }

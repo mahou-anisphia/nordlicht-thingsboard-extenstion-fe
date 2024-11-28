@@ -1,11 +1,7 @@
 // src/components/Navbar.tsx
 import React from "react";
-import { Layout, Menu, Button } from "antd";
-import {
-  LogoutOutlined,
-  DashboardOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { Layout, Button } from "antd";
+import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 
@@ -21,30 +17,15 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <Header className="bg-white shadow-md">
+    <Header className="bg-white px-4 shadow-md fixed w-full z-10">
       <div className="max-w-7xl mx-auto flex justify-between items-center h-full">
-        <div className="flex items-center">
-          <h1 className="text-xl font-bold mr-8">Your App</h1>
-          <Menu mode="horizontal" className="border-0">
-            <Menu.Item
-              key="dashboard"
-              icon={<DashboardOutlined />}
-              onClick={() => navigate("/dashboard")}
-            >
-              Dashboard
-            </Menu.Item>
-            <Menu.Item
-              key="profile"
-              icon={<UserOutlined />}
-              onClick={() => navigate("/profile")}
-            >
-              Profile
-            </Menu.Item>
-          </Menu>
-        </div>
-        <div className="flex items-center">
-          <span className="mr-4">{user?.email}</span>
-          <Button icon={<LogoutOutlined />} onClick={handleLogout}>
+        <div className="text-xl font-bold">Your App</div>
+        <div className="flex items-center gap-4">
+          <span className="hidden md:flex items-center gap-2">
+            <UserOutlined />
+            {user?.email}
+          </span>
+          <Button icon={<LogoutOutlined />} onClick={handleLogout} type="text">
             Logout
           </Button>
         </div>

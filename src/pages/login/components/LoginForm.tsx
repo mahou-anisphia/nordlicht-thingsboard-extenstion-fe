@@ -1,10 +1,11 @@
-// components/LoginForm.tsx
 import React from "react";
 import { Form, Input, Button, Card, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../../store/useAuthStore";
-import { LoginCredentials } from "../../../types/auth";
+import useAuthStore from "@/store/useAuthStore";
+import { LoginCredentials } from "@/types/auth";
+
+import logoPath from "@/assets/logo.jpg";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -29,8 +30,20 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-8">Login</h1>
+      <Card className="w-full max-w-xl shadow-md p-6">
+        <div className="flex justify-center mb-6">
+          <img src={logoPath} alt="Platform Logo" className="max-h-20 mb-4" />
+        </div>
+
+        {/* Large text about platform name */}
+        <h1 className="text-4xl font-bold text-center mb-4 text-gray-800">
+          Nordlicht TB Extension
+        </h1>
+
+        {/* Smaller text about signing in */}
+        <p className="text-center text-gray-600 mb-6">
+          Sign in to continue to your dashboard
+        </p>
 
         <Form
           form={form}

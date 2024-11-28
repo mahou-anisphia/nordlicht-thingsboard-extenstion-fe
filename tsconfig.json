@@ -1,7 +1,25 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "esModuleInterop": true,
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+
+    // Add these library options
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "target": "ES2021"
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
   "references": [
-    { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
 }
