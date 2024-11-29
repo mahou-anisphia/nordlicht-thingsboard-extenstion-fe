@@ -5,6 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 import LoginPage from "./pages/login";
 import NotFoundPage from "./pages/notfound";
 import Dashboard from "./pages/dashboard";
+import DevicesManagementPage from "./pages/devicesManagement";
 import User from "./pages/user";
 import useAuthStore from "./store/useAuthStore";
 import themeConfig from "./theme/themeConfig";
@@ -41,6 +42,7 @@ const App: React.FC = () => {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="users" element={<User />} />
+            <Route path="devices" element={<DevicesManagementPage />} />
             {/* <Route path="notfound" element={<NotFoundPage />} /> */}
             {/* Add more routes here */}
           </Route>

@@ -25,17 +25,15 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 0 24px;
+  padding: 0 20px;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Add padding to main content to prevent overlap */
 .ant-layout-content {
-  padding-top: 64px; /* Height of the header */
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px - 70px); /* Subtract header and footer height */
 }
-
 /* Additional custom styles */
 .ant-layout {
   background: #f0f2f5;
@@ -62,4 +60,7 @@ body {
 
 .ant-btn-primary:active {
   background-color: var(--viettel-red-dark) !important;
+}
+.ant-layout-footer {
+  margin-top: auto;
 }

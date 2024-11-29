@@ -1,4 +1,3 @@
-// src/layouts/MainLayout.tsx
 import React, { useState } from "react";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
@@ -21,11 +20,11 @@ const MainLayout: React.FC = () => {
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
         <Layout
           style={{ marginLeft: collapsed ? 80 : 200 }}
-          className="transition-all duration-300"
+          className="transition-all duration-300 flex flex-col min-h-screen"
         >
           <Content
-            className="p-6 min-h-[280px] overflow-y-auto"
-            style={{ maxHeight: "calc(100vh - 64px)" }} // Adjust for navbar height dynamically
+            className="flex-1 p-6"
+            style={{ marginTop: "64px" }} // Account for navbar height
           >
             <div className="max-w-7xl mx-auto">
               <Outlet />
