@@ -13,14 +13,20 @@ const MainLayout: React.FC = () => {
 
   return (
     <Layout className="min-h-screen">
-      <Navbar />
+      {/* Navbar with sticky positioning */}
+      <div className="sticky top-0 z-50">
+        <Navbar />
+      </div>
       <Layout>
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
         <Layout
           style={{ marginLeft: collapsed ? 80 : 200 }}
           className="transition-all duration-300"
         >
-          <Content className="p-6 min-h-[280px]">
+          <Content
+            className="p-6 min-h-[280px] overflow-y-auto"
+            style={{ maxHeight: "calc(100vh - 64px)" }} // Adjust for navbar height dynamically
+          >
             <div className="max-w-7xl mx-auto">
               <Outlet />
             </div>

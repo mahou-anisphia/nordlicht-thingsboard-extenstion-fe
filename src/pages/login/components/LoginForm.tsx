@@ -37,7 +37,7 @@ const LoginForm: React.FC = () => {
 
         {/* Large text about platform name */}
         <h1 className="text-4xl font-bold text-center mb-4 text-gray-800">
-          Nordlicht TB Extension
+          Nordlicht Data Exporter
         </h1>
 
         {/* Smaller text about signing in */}

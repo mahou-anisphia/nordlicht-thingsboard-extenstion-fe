@@ -33,4 +33,5 @@ export interface AuthState {
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
+  rehydrate: () => void;
 }

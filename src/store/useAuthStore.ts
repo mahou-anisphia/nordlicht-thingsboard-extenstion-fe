@@ -1,9 +1,6 @@
-// store/useAuthStore.ts
 import { create } from "zustand";
-import axios from "axios";
 import { AuthState, LoginCredentials, LoginResponse } from "../types/auth";
-
-const API_URL = "http://localhost:50060/api/v1";
+import api from "../utils/axios";
 
 const useAuthStore = create<AuthState>((set) => ({
   user: null,
@@ -11,23 +8,30 @@ const useAuthStore = create<AuthState>((set) => ({
   error: null,
   isAuthenticated: false,
 
+  // Rehydrate state from localStorage
+  rehydrate: () => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      set({
+        user: JSON.parse(user),
+        isAuthenticated: true,
+      });
+    }
+  },
+
   login: async (credentials: LoginCredentials) => {
     try {
       set({ isLoading: true, error: null });
-
-      const response = await axios.post<LoginResponse>(
-        `${API_URL}/auth/login`,
+      const response = await api.post<LoginResponse>(
+        "/auth/login",
         credentials
       );
-
       const { access_token, user } = response.data;
 
       // Store token and user data
       localStorage.setItem("token", access_token);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // Set axios default header
-      axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
 
       set({
         user,
@@ -47,7 +51,6 @@ const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    delete axios.defaults.headers.common["Authorization"];
     set({
       user: null,
       error: null,

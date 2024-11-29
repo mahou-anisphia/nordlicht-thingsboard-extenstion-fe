@@ -1,9 +1,9 @@
-// src/App.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import MainLayout from "./layouts/MainLayout";
 import LoginPage from "./pages/login";
+import NotFoundPage from "./pages/notfound";
 import Dashboard from "./pages/dashboard";
 import useAuthStore from "./store/useAuthStore";
 import themeConfig from "./theme/themeConfig";
@@ -16,6 +16,12 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
 };
 
 const App: React.FC = () => {
+  const rehydrate = useAuthStore((state) => state.rehydrate);
+
+  useEffect(() => {
+    rehydrate(); // Rehydrate authentication state from localStorage
+  }, [rehydrate]);
+
   return (
     <ConfigProvider theme={themeConfig}>
       <BrowserRouter>
@@ -33,10 +39,11 @@ const App: React.FC = () => {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="notfound" element={<NotFoundPage />} />
             {/* Add more routes here */}
           </Route>
           {/* Catch all route */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/notfound" replace />} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>

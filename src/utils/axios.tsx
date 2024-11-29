@@ -1,6 +1,7 @@
 // utils/axios.ts
 import axios from "axios";
 import { isTokenValid } from "./auth";
+import { defaultIconPrefixCls } from "antd/es/config-provider";
 
 const api = axios.create({
   baseURL: "http://localhost:50060/api/v1",
@@ -36,3 +37,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default api;

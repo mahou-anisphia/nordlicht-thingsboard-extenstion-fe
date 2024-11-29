@@ -9,7 +9,8 @@ const Footer: React.FC = () => {
     <AntFooter className="text-center bg-gray-100">
       <div className="max-w-7xl mx-auto">
         <p className="text-gray-600">
-          ©{new Date().getFullYear()} Your App. All rights reserved.
+          ©{new Date().getFullYear()} Nordlicht Data Exporter. All rights
+          reserved.
         </p>
       </div>
     </AntFooter>
