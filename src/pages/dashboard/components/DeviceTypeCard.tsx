@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 interface DeviceTypeCardProps {
   type: string;
   count: number;
-  deviceId: string;
+  deviceProfileId: string;
 }
 
 export const DeviceTypeCard: React.FC<DeviceTypeCardProps> = ({
   type,
   count,
-  deviceId,
+  deviceProfileId,
 }) => {
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ export const DeviceTypeCard: React.FC<DeviceTypeCardProps> = ({
       title={`${type.charAt(0).toUpperCase() + type.slice(1)} Devices`}
       value={count}
       prefix={<ApiOutlined className="text-orange-500" />}
-      onClick={() => navigate(`/devices/${deviceId}`)}
+      onClick={() => navigate(`/device-profile/${deviceProfileId}`)}
     />
   );
 };

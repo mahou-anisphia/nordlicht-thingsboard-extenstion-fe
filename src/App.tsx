@@ -5,6 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 import LoginPage from "./pages/login";
 import NotFoundPage from "./pages/notfound";
 import Dashboard from "./pages/dashboard";
+import User from "./pages/user";
 import useAuthStore from "./store/useAuthStore";
 import themeConfig from "./theme/themeConfig";
 
@@ -39,11 +40,12 @@ const App: React.FC = () => {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="notfound" element={<NotFoundPage />} />
+            <Route path="users" element={<User />} />
+            {/* <Route path="notfound" element={<NotFoundPage />} /> */}
             {/* Add more routes here */}
           </Route>
           {/* Catch all route */}
-          <Route path="*" element={<Navigate to="/notfound" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>

@@ -68,9 +68,13 @@ const Dashboard: React.FC = () => {
       {/* Device type breakdown */}
       <h2 className="text-xl font-semibold mt-8 mb-4">Device Types</h2>
       <Row gutter={[16, 16]}>
-        {deviceCounts?.by_type.map((typeData) => (
-          <Col xs={24} sm={8} key={typeData.type}>
-            <DeviceTypeCard type={typeData.type} count={typeData.count} />
+        {deviceCounts?.by_profile.map((typeData) => (
+          <Col xs={24} sm={8} key={typeData.profile_name}>
+            <DeviceTypeCard
+              type={typeData.profile_name}
+              count={typeData.count}
+              deviceProfileId={typeData.profile_id}
+            />
           </Col>
         ))}
       </Row>
