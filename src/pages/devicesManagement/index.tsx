@@ -1,15 +1,15 @@
 // src/devicemanagement/index.tsx
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Alert, Button, Input } from "antd";
+import { Card, Typography, Alert, Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useDeviceStore from "@/store/useDeviceStore";
 import { StatsSection } from "./components/StatsSection";
 import { DeviceTable } from "./components/DeviceTable";
+import { DeviceFilters } from "./components/DeviceFilter";
 import { Device } from "@/types/devices";
 
 const { Title, Text } = Typography;
-const { Search } = Input;
 
 const DevicesManagementPage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,21 +33,16 @@ const DevicesManagementPage: React.FC = () => {
     setFilteredDevices(devices);
   }, [devices]);
 
-  const handlePageChange = (page: number, pageSize: number) => {
-    fetchDevices(page, pageSize);
-  };
-
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleSearch = (value: string) => {
-    const filtered = devices.filter(
-      (device) =>
-        device.name.toLowerCase().includes(value.toLowerCase()) ||
-        device.id.toLowerCase().includes(value.toLowerCase())
-    );
+  const handleSearch = (filtered: Device[]) => {
     setFilteredDevices(filtered);
+  };
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    fetchDevices(page, pageSize);
   };
 
   return (
@@ -77,14 +72,11 @@ const DevicesManagementPage: React.FC = () => {
 
         <StatsSection counts={counts} />
 
-        <div className="mb-6">
-          <Search
-            placeholder="Search by name or UUID..."
-            onChange={(e) => handleSearch(e.target.value)}
-            className="max-w-xl"
-            allowClear
-          />
-        </div>
+        <DeviceFilters
+          profiles={counts?.by_profile || []}
+          onSearch={handleSearch}
+          allDevices={devices}
+        />
 
         <DeviceTable
           devices={filteredDevices}

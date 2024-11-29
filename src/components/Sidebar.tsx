@@ -1,4 +1,3 @@
-// src/components/Sidebar.tsx
 import React from "react";
 import { Layout, Menu } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,6 +5,8 @@ import {
   DashboardOutlined,
   UserOutlined,
   SettingOutlined,
+  TeamOutlined,
+  LaptopOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -24,6 +25,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       key: "/dashboard",
       icon: <DashboardOutlined />,
       label: "Dashboard",
+    },
+    {
+      key: "/users",
+      icon: <TeamOutlined />,
+      label: "Users",
+    },
+    {
+      key: "/devices",
+      icon: <LaptopOutlined />,
+      label: "Devices",
     },
     {
       key: "/profile",
