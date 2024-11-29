@@ -1,7 +1,9 @@
+// src/devicemanagement/components/DeviceTable.tsx
 import React from "react";
-import { Table, Tag } from "antd";
+import { Table, Typography, Tag } from "antd";
 import { format } from "date-fns";
 import { Device } from "@/types/devices";
+import { getTypeColor } from "@/utils/deviceUtils";
 
 interface DeviceTableProps {
   devices: Device[];
@@ -12,8 +14,6 @@ interface DeviceTableProps {
     total: number;
   };
   onPageChange: (page: number, pageSize: number) => void;
-  getTypeColor: (type: string) => string;
-  getTypeLabel: (type: string) => string;
 }
 
 export const DeviceTable: React.FC<DeviceTableProps> = ({
@@ -21,29 +21,34 @@ export const DeviceTable: React.FC<DeviceTableProps> = ({
   isLoading,
   pagination,
   onPageChange,
-  getTypeColor,
-  getTypeLabel,
 }) => {
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text: string) => <span className="font-medium">{text}</span>,
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (type: string) => (
-        <Tag color={getTypeColor(type)}>{getTypeLabel(type)}</Tag>
+      render: (text: string, record: Device) => (
+        <div>
+          <Typography.Text strong>{text}</Typography.Text>
+          <br />
+          <Typography.Text type="secondary" className="text-xs">
+            {record.id}
+          </Typography.Text>
+        </div>
       ),
     },
     {
-      title: "Label",
-      dataIndex: "label",
-      key: "label",
-      render: (text: string | null) => text || "-",
+      title: "Profile",
+      dataIndex: ["device_profile", "name"],
+      key: "profile",
+      render: (text: string) => {
+        const { color, background } = getTypeColor(text);
+        return (
+          <Tag color={background} className="border-0">
+            <span style={{ color }}>{text}</span>
+          </Tag>
+        );
+      },
     },
     {
       title: "Created At",
@@ -59,7 +64,9 @@ export const DeviceTable: React.FC<DeviceTableProps> = ({
       key: "customer_id",
       width: 300,
       render: (text: string) => (
-        <span className="text-xs font-mono">{text}</span>
+        <Typography.Text copyable className="text-xs font-mono">
+          {text}
+        </Typography.Text>
       ),
     },
   ];

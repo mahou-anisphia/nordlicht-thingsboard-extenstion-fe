@@ -1,14 +1,15 @@
+// src/devicemanagement/index.tsx
 import React, { useEffect, useState } from "react";
-import { Card, Typography, Alert, Button } from "antd";
+import { Card, Typography, Alert, Button, Input } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useDeviceStore from "@/store/useDeviceStore";
-import { StatsCard } from "./components/StatsCard";
-import { DeviceFilters } from "./components/DeviceFilter";
+import { StatsSection } from "./components/StatsSection";
 import { DeviceTable } from "./components/DeviceTable";
-import { getTypeColor, getTypeLabel } from "@/utils/deviceUtils";
+import { Device } from "@/types/devices";
 
 const { Title, Text } = Typography;
+const { Search } = Input;
 
 const DevicesManagementPage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,37 +22,33 @@ const DevicesManagementPage: React.FC = () => {
     fetchDevices,
     fetchCounts,
   } = useDeviceStore();
-  const [filters, setFilters] = useState({
-    type: undefined,
-    profileId: undefined,
-  });
+  const [filteredDevices, setFilteredDevices] = useState<Device[]>(devices);
 
   useEffect(() => {
     fetchCounts();
     fetchDevices(1, 10);
   }, [fetchDevices, fetchCounts]);
 
+  useEffect(() => {
+    setFilteredDevices(devices);
+  }, [devices]);
+
   const handlePageChange = (page: number, pageSize: number) => {
-    fetchDevices(page, pageSize, filters);
+    fetchDevices(page, pageSize);
   };
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleTypeChange = (value: string) => {
-    const newFilters = { ...filters, type: value };
-    setFilters(newFilters);
-    fetchDevices(1, pagination.pageSize, newFilters);
-  };
-
   const handleSearch = (value: string) => {
-    const newFilters = { ...filters, search: value };
-    setFilters(newFilters);
-    fetchDevices(1, pagination.pageSize, newFilters);
+    const filtered = devices.filter(
+      (device) =>
+        device.name.toLowerCase().includes(value.toLowerCase()) ||
+        device.id.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredDevices(filtered);
   };
-
-  const uniqueTypes = counts?.by_type || [];
 
   return (
     <div className="p-6">
@@ -78,32 +75,23 @@ const DevicesManagementPage: React.FC = () => {
           <Alert message={error} type="error" showIcon className="mb-4" />
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <StatsCard value={counts?.total || 0} label="Total Devices" />
-          <StatsCard value={uniqueTypes.length || 0} label="Device Types" />
-          <StatsCard
-            value={counts?.by_profile?.length || 0}
-            label="Device Profiles"
+        <StatsSection counts={counts} />
+
+        <div className="mb-6">
+          <Search
+            placeholder="Search by name or UUID..."
+            onChange={(e) => handleSearch(e.target.value)}
+            className="max-w-xl"
+            allowClear
           />
         </div>
 
-        <DeviceFilters
-          uniqueTypes={uniqueTypes}
-          onSearch={handleSearch}
-          onTypeChange={handleTypeChange}
-          getTypeLabel={getTypeLabel}
+        <DeviceTable
+          devices={filteredDevices}
+          isLoading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
         />
-
-        <div className="relative">
-          <DeviceTable
-            devices={devices}
-            isLoading={isLoading}
-            pagination={pagination}
-            onPageChange={handlePageChange}
-            getTypeColor={getTypeColor}
-            getTypeLabel={getTypeLabel}
-          />
-        </div>
       </Card>
     </div>
   );
