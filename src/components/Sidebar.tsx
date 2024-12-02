@@ -8,7 +8,10 @@ import {
   TeamOutlined,
   LaptopOutlined,
   AppstoreOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
+import useDeviceProfileStore from "@/store/useDeviceProfileStore";
+import { useEffect } from "react";
 
 const { Sider } = Layout;
 
@@ -20,6 +23,25 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { deviceProfiles, fetchDeviceProfiles } = useDeviceProfileStore();
+
+  useEffect(() => {
+    fetchDeviceProfiles();
+  }, [fetchDeviceProfiles]);
+
+  const deviceProfileSubItems = deviceProfiles.map((profile) => ({
+    key: `/device-profile/${profile.id}`,
+    icon: <ProfileOutlined />,
+    label: profile.name,
+  }));
+
+  // Get the selected key based on current path
+  const getSelectedKey = (pathname: string) => {
+    if (pathname.startsWith("/device/")) {
+      return "/devices";
+    }
+    return pathname;
+  };
 
   const menuItems = [
     {
@@ -38,9 +60,17 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       label: "Devices",
     },
     {
-      key: "/device-profiles",
+      key: "device-profiles-group",
       icon: <AppstoreOutlined />,
       label: "Device Profiles",
+      children: [
+        {
+          key: "/device-profiles",
+          icon: <AppstoreOutlined />,
+          label: "All Profiles",
+        },
+        ...deviceProfileSubItems,
+      ],
     },
     {
       key: "/profile",
@@ -72,9 +102,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     >
       <Menu
         mode="inline"
-        selectedKeys={[location.pathname]}
+        selectedKeys={[getSelectedKey(location.pathname)]}
+        defaultOpenKeys={["device-profiles-group"]}
         items={menuItems}
-        onClick={({ key }) => navigate(key)}
+        onClick={({ key }) => {
+          if (!key.startsWith("device-profiles-group")) {
+            navigate(key);
+          }
+        }}
         className="mt-2"
       />
     </Sider>

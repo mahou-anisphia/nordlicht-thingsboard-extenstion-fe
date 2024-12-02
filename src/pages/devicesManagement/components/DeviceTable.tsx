@@ -6,6 +6,7 @@ import { Device } from "@/types/devices";
 import { getTypeColor } from "@/utils/deviceUtils";
 import type { ResizeCallbackData } from "react-resizable";
 import { Resizable } from "react-resizable";
+import { useNavigate } from "react-router-dom";
 import "react-resizable/css/styles.css";
 
 // Resizable header component
@@ -58,6 +59,8 @@ export const DeviceTable: React.FC<DeviceTableProps> = ({
   pagination,
   onPageChange,
 }) => {
+  const navigate = useNavigate();
+
   // Column widths state
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>({
     name: 200,
@@ -103,7 +106,10 @@ export const DeviceTable: React.FC<DeviceTableProps> = ({
       key: "name",
       width: columnWidths.name,
       render: (text: string, record: Device) => (
-        <div>
+        <div
+          className="cursor-pointer hover:text-blue-600"
+          onClick={() => navigate(`/device/${record.id}`)}
+        >
           <Typography.Text strong>{text}</Typography.Text>
           <br />
           <Typography.Text type="secondary" className="text-xs">
