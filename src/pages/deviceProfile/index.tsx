@@ -6,43 +6,14 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import useDeviceProfileStore from "@/store/useDeviceProfileStore";
 import { DeviceProfile } from "@/types/device-profile.types";
-import type { ResizeCallbackData } from "react-resizable";
-import { Resizable } from "react-resizable";
-import "react-resizable/css/styles.css";
+import { ResizableHeader } from "./components/ResizableHeader";
+import { useColumnResize } from "@/hooks/useColumnResize";
+import {
+  transportTypeColors,
+  initialColumnWidths,
+} from "@/constants/transport-types";
 
 const { Title, Text } = Typography;
-
-interface ResizableHeaderProps extends React.HTMLAttributes<HTMLElement> {
-  width: number;
-  onResize: (e: React.SyntheticEvent, data: ResizeCallbackData) => void;
-}
-
-const ResizableHeader: React.FC<ResizableHeaderProps> = ({
-  width,
-  onResize,
-  ...restProps
-}) => {
-  if (!width) {
-    return <th {...restProps} />;
-  }
-
-  return (
-    <Resizable
-      width={width}
-      height={0}
-      handle={
-        <span
-          className="react-resizable-handle"
-          onClick={(e) => e.stopPropagation()}
-        />
-      }
-      onResize={onResize}
-      draggableOpts={{ enableUserSelectHack: false }}
-    >
-      <th {...restProps} />
-    </Resizable>
-  );
-};
 
 const DeviceProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -56,18 +27,8 @@ const DeviceProfilePage: React.FC = () => {
     setPage,
   } = useDeviceProfileStore();
 
-  // Initial column widths
-  const initialColumnWidths = {
-    name: 150,
-    type: 120,
-    transport_type: 150,
-    provision_type: 150,
-    description: 200,
-    created_time: 180,
-  };
-
-  const [columnWidths, setColumnWidths] =
-    React.useState<Record<string, number>>(initialColumnWidths);
+  const { columnWidths, setColumnWidths, handleResize } =
+    useColumnResize(containerRef);
 
   // Adjust initial column widths to fit container
   useEffect(() => {
@@ -95,14 +56,13 @@ const DeviceProfilePage: React.FC = () => {
     };
 
     adjustInitialWidths();
-    // Add resize observer to handle window/container resizing
     const resizeObserver = new ResizeObserver(adjustInitialWidths);
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
 
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [setColumnWidths]);
 
   useEffect(() => {
     fetchDeviceProfiles();
@@ -122,53 +82,6 @@ const DeviceProfilePage: React.FC = () => {
     const end = start + pageSize;
     return deviceProfiles.slice(start, end);
   }, [deviceProfiles, pagination]);
-
-  const handleResize =
-    (key: string) =>
-    (_: React.SyntheticEvent, { size }: ResizeCallbackData) => {
-      if (!containerRef.current) return;
-
-      const containerWidth = containerRef.current.clientWidth;
-      const columnKeys = Object.keys(columnWidths);
-      const currentIndex = columnKeys.indexOf(key);
-
-      // Get the minimum width needed for ellipsis
-      const minWidth = 40;
-
-      // Calculate new width for the resized column
-      const newWidth = Math.max(minWidth, size.width);
-
-      // Calculate the available width for columns to the right
-      const leftColumnsWidth = columnKeys
-        .slice(0, currentIndex)
-        .reduce((sum, k) => sum + columnWidths[k], 0);
-
-      const availableWidth = containerWidth - leftColumnsWidth - newWidth;
-
-      // Get columns to the right of the current column
-      const rightColumns = columnKeys.slice(currentIndex + 1);
-
-      if (rightColumns.length === 0) return;
-
-      // Distribute remaining width proportionally to right columns
-      const rightColumnsTotalWidth = rightColumns.reduce(
-        (sum, k) => sum + columnWidths[k],
-        0
-      );
-      const rightColumnsRatio = availableWidth / rightColumnsTotalWidth;
-
-      const newWidths = { ...columnWidths };
-      newWidths[key] = newWidth;
-
-      rightColumns.forEach((colKey) => {
-        newWidths[colKey] = Math.max(
-          minWidth,
-          Math.floor(columnWidths[colKey] * rightColumnsRatio)
-        );
-      });
-
-      setColumnWidths(newWidths);
-    };
 
   const columns: ColumnsType<DeviceProfile> = [
     {
@@ -201,7 +114,14 @@ const DeviceProfilePage: React.FC = () => {
       dataIndex: "transport_type",
       key: "transport_type",
       width: columnWidths.transport_type,
-      render: (text: string) => <Tag color="cyan">{text}</Tag>,
+      render: (text: string) => {
+        const normalizedText = text.toUpperCase();
+        return (
+          <Tag color={transportTypeColors[normalizedText] || "default"}>
+            {text}
+          </Tag>
+        );
+      },
     },
     {
       title: "Provision Type",

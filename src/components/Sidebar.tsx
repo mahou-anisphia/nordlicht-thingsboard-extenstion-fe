@@ -91,8 +91,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       collapsed={collapsed}
       onCollapse={setCollapsed}
       style={{
-        overflow: "auto",
-        height: "100vh",
+        overflow: "hidden",
+        height: "calc(100vh - 64px)",
         position: "fixed",
         left: 0,
         top: 64,
@@ -100,18 +100,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       }}
       width={200}
     >
-      <Menu
-        mode="inline"
-        selectedKeys={[getSelectedKey(location.pathname)]}
-        defaultOpenKeys={["device-profiles-group"]}
-        items={menuItems}
-        onClick={({ key }) => {
-          if (!key.startsWith("device-profiles-group")) {
-            navigate(key);
-          }
-        }}
-        className="mt-2"
-      />
+      <div style={{ height: "100%", overflowY: "auto", paddingBottom: "24px" }}>
+        <Menu
+          mode="inline"
+          selectedKeys={[getSelectedKey(location.pathname)]}
+          defaultOpenKeys={["device-profiles-group"]}
+          items={menuItems}
+          onClick={({ key }) => {
+            if (!key.startsWith("device-profiles-group")) {
+              navigate(key);
+            }
+          }}
+          className="mt-2"
+          style={{ border: "none" }}
+        />
+      </div>
     </Sider>
   );
 };
