@@ -4,6 +4,7 @@ import LoginPage from "@/pages/login";
 import NotFoundPage from "@/pages/notfound";
 import Dashboard from "@/pages/dashboard";
 import DevicesManagementPage from "@/pages/devicesManagement";
+import DeviceProfilePage from "@/pages/deviceProfile";
 import User from "@/pages/user";
 import MainLayout from "@/layouts/MainLayout";
 import PrivateRoute from "./PrivateRoute";
@@ -27,6 +28,7 @@ const AppRoutes: React.FC = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<User />} />
         <Route path="devices" element={<DevicesManagementPage />} />
+        <Route path="device-profiles" element={<DeviceProfilePage />} />
         {/* Add more routes here */}
       </Route>
 

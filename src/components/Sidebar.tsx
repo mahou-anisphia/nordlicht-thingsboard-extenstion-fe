@@ -7,6 +7,7 @@ import {
   SettingOutlined,
   TeamOutlined,
   LaptopOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -35,6 +36,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       key: "/devices",
       icon: <LaptopOutlined />,
       label: "Devices",
+    },
+    {
+      key: "/device-profiles",
+      icon: <AppstoreOutlined />,
+      label: "Device Profiles",
     },
     {
       key: "/profile",
