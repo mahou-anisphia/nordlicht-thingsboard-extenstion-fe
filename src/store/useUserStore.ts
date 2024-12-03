@@ -18,7 +18,9 @@ const useUserStore = create<UserState>((set) => ({
   fetchUsers: async (page = 1, limit = 10) => {
     try {
       set({ isLoading: true, error: null });
-      const response = await api.get(`/auth/users?page=${page}&limit=${limit}`);
+      const response = await api.get(
+        `/auth/users?pageNumber=${page}&pageSize=${limit}`
+      );
       set({
         users: response.data.users,
         pagination: response.data.pagination,
