@@ -10,7 +10,7 @@ const { Title, Text } = Typography;
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, isLoading, fetchProfile } = useProfileStore();
+  const { profile, loading, fetchProfile } = useProfileStore();
 
   useEffect(() => {
     fetchProfile();
@@ -20,7 +20,7 @@ const ProfilePage: React.FC = () => {
     navigate(-1);
   };
 
-  if (isLoading || !profile) {
+  if (loading || !profile) {
     return (
       <div className="flex justify-center items-center h-full">
         <Spin size="large" />

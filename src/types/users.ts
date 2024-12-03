@@ -12,7 +12,7 @@ export interface User {
 export interface Pagination {
   total: number;
   page: number;
-  limit: number;
+  pageSize: number;
   totalPages: number;
 }
 
@@ -24,9 +24,9 @@ export interface UsersResponse {
 export interface UserState {
   users: User[];
   pagination: Pagination;
-  isLoading: boolean;
+  loading: boolean;
   error: string | null;
-  count: number;
-  fetchUsers: (page?: number, limit?: number) => Promise<void>;
-  fetchCount: () => Promise<void>;
+  counts: number;
+  fetchUsers: (page?: number, pageSize?: number) => Promise<void>;
+  fetchCounts: () => Promise<void>;
 }

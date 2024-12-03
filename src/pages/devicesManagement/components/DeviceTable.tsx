@@ -44,7 +44,7 @@ const ResizableHeader: React.FC<ResizableHeaderProps> = ({
 
 interface DeviceTableProps {
   devices: Device[];
-  isLoading: boolean;
+  loading: boolean;
   pagination: {
     page: number;
     pageSize: number;
@@ -55,7 +55,7 @@ interface DeviceTableProps {
 
 export const DeviceTable: React.FC<DeviceTableProps> = ({
   devices,
-  isLoading,
+  loading,
   pagination,
   onPageChange,
 }) => {
@@ -175,7 +175,7 @@ export const DeviceTable: React.FC<DeviceTableProps> = ({
         dataSource={devices}
         columns={resizableColumns}
         rowKey="id"
-        loading={isLoading}
+        loading={loading}
         components={{
           header: {
             cell: ResizableHeader,

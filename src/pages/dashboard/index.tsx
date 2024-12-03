@@ -13,26 +13,26 @@ import {
 const Dashboard: React.FC = () => {
   // Get store data and functions
   const {
-    count: userCount,
-    isLoading: usersLoading,
-    fetchCount: fetchUserCount,
+    counts: userCounts,
+    loading: usersLoading,
+    fetchCounts: fetchUserCounts,
   } = useUserStore();
 
   const {
     counts: deviceCounts,
-    isLoading: devicesLoading,
+    loading: devicesLoading,
     fetchCounts: fetchDeviceCounts,
   } = useDeviceStore();
 
   const {
     counts: profileCounts,
-    isLoading: profilesLoading,
+    loading: profilesLoading,
     fetchCounts: fetchProfileCounts,
   } = useDeviceProfileStore();
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchUserCount();
+    fetchUserCounts();
     fetchDeviceCounts();
     fetchProfileCounts();
   }, []);
@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={8}>
-          <UserCard count={userCount} isLoading={isLoading} />
+          <UserCard count={userCounts} isLoading={isLoading} />
         </Col>
 
         <Col xs={24} sm={8}>

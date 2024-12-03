@@ -10,7 +10,7 @@ const { Title, Text } = Typography;
 
 const UsersPage = () => {
   const navigate = useNavigate();
-  const { users, pagination, isLoading, error, fetchUsers } = useUserStore();
+  const { users, pagination, loading, error, fetchUsers } = useUserStore();
 
   useEffect(() => {
     fetchUsers(1, 10);
@@ -103,7 +103,7 @@ const UsersPage = () => {
             dataSource={users}
             columns={columns}
             rowKey="id"
-            loading={isLoading}
+            loading={loading}
             pagination={{
               current: pagination.page,
               pageSize: pagination.limit,

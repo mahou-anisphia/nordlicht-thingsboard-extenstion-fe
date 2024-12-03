@@ -52,6 +52,6 @@ export interface DeviceState {
   devices: Device[];
   counts: DeviceCountResponse | null;
   pagination: PaginationMeta;
-  isLoading: boolean;
+  loading: boolean;
   error: string | null;
 }

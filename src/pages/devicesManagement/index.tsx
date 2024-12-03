@@ -17,7 +17,7 @@ const DevicesManagementPage: React.FC = () => {
     devices,
     counts,
     pagination,
-    isLoading,
+    loading,
     error,
     fetchDevices,
     fetchCounts,
@@ -80,7 +80,7 @@ const DevicesManagementPage: React.FC = () => {
 
         <DeviceTable
           devices={filteredDevices}
-          isLoading={isLoading}
+          loading={loading}
           pagination={pagination}
           onPageChange={handlePageChange}
         />

@@ -15,6 +15,6 @@ export interface DeviceProfileCountResponse {
 
 export interface DeviceProfileState {
   counts: DeviceProfileCountResponse | null;
-  isLoading: boolean;
+  loading: boolean;
   error: string | null;
 }

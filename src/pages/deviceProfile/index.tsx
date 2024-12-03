@@ -74,14 +74,11 @@ const DeviceProfilePage: React.FC = () => {
 
   const handlePageChange = (page: number, pageSize: number) => {
     setPage(page, pageSize);
+    fetchDeviceProfiles(page, pageSize);
   };
 
-  const currentPageData = useMemo(() => {
-    const { page, pageSize } = pagination;
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    return deviceProfiles.slice(start, end);
-  }, [deviceProfiles, pagination]);
+  // Remove client-side pagination
+  const currentPageData = deviceProfiles;
 
   const columns: ColumnsType<DeviceProfile> = [
     {
@@ -204,7 +201,7 @@ const DeviceProfilePage: React.FC = () => {
             pagination={{
               current: pagination.page,
               pageSize: pagination.pageSize,
-              total: deviceProfiles.length,
+              total: pagination.total,
               onChange: handlePageChange,
               showSizeChanger: true,
               showTotal: (total) => `Total ${total} items`,

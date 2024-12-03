@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 interface DeviceProfileCardProps {
   totalProfiles: number;
   totalDevices: number;
-  isLoading: boolean;
+  loading: boolean;
 }
 
 export const DeviceProfileCard: React.FC<DeviceProfileCardProps> = ({
   totalProfiles,
   totalDevices,
-  isLoading,
+  loading,
 }) => {
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export const DeviceProfileCard: React.FC<DeviceProfileCardProps> = ({
       suffix={
         <span className="text-xs text-gray-500">({totalDevices} devices)</span>
       }
-      isLoading={isLoading}
+      loading={loading}
       onClick={() => navigate("/device-profiles")}
     />
   );

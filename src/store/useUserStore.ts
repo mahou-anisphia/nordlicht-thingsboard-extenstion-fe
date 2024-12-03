@@ -8,44 +8,48 @@ const useUserStore = create<UserState>((set) => ({
   pagination: {
     total: 0,
     page: 1,
-    limit: 10,
+    pageSize: 10,
     totalPages: 0,
   },
-  count: 0,
-  isLoading: false,
+  counts: 0,
+  loading: false,
   error: null,
 
-  fetchUsers: async (page = 1, limit = 10) => {
+  fetchUsers: async (page = 1, pageSize = 10) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ loading: true, error: null });
       const response = await api.get(
-        `/auth/users?pageNumber=${page}&pageSize=${limit}`
+        `/auth/users?pageNumber=${page}&pageSize=${pageSize}`
       );
       set({
         users: response.data.users,
         pagination: response.data.pagination,
-        isLoading: false,
+        loading: false,
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch users";
       set({
-        error: error.response?.data?.message || "Failed to fetch users",
-        isLoading: false,
+        error: errorMessage,
+        loading: false,
       });
     }
   },
 
-  fetchCount: async () => {
+  fetchCounts: async () => {
     try {
-      set({ isLoading: true, error: null });
+      set({ loading: true, error: null });
       const response = await api.get("/auth/users/count");
       set({
-        count: response.data.count,
-        isLoading: false,
+        counts: response.data.count,
+        loading: false,
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch user count";
       set({
-        error: error.response?.data?.message || "Failed to fetch user count",
-        isLoading: false,
+        error: errorMessage,
+        loading: false,
       });
     }
   },

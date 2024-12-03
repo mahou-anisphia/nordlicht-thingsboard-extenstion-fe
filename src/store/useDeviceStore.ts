@@ -1,8 +1,18 @@
 // store/useDeviceStore.ts
 
 import { create } from "zustand";
-import { DeviceState, DeviceResponse } from "@/types/devices";
+import { DeviceState, Device } from "@/types/devices";
 import api from "../utils/axios";
+
+interface DeviceResponse {
+  devices: Device[];
+  pagination: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
 
 const defaultPagination = {
   total: 0,
@@ -16,7 +26,7 @@ const useDeviceStore = create<
     fetchDevices: (
       page?: number,
       pageSize?: number,
-      filters?: Record<string, any>
+      filters?: Record<string, string>
     ) => Promise<void>;
     fetchCounts: () => Promise<void>;
   }
@@ -24,12 +34,12 @@ const useDeviceStore = create<
   devices: [],
   counts: null,
   pagination: defaultPagination,
-  isLoading: false,
+  loading: false,
   error: null,
 
   fetchDevices: async (page = 1, pageSize = 10, filters = {}) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ loading: true, error: null });
       const params = new URLSearchParams({
         pageNumber: page.toString(),
         pageSize: pageSize.toString(),
@@ -39,30 +49,39 @@ const useDeviceStore = create<
       const response = await api.get<DeviceResponse>(`/devices?${params}`);
 
       set({
-        devices: response.data.data,
-        pagination: response.data.meta,
-        isLoading: false,
+        devices: response.data.devices,
+        pagination: {
+          ...response.data.pagination,
+          pageSize: response.data.pagination.pageSize,
+        },
+        loading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch devices";
       set({
-        error: error.response?.data?.message || "Failed to fetch devices",
-        isLoading: false,
+        error: errorMessage,
+        loading: false,
       });
     }
   },
 
   fetchCounts: async () => {
     try {
-      set({ isLoading: true, error: null });
+      set({ loading: true, error: null });
       const response = await api.get("/devices/count");
       set({
         counts: response.data,
-        isLoading: false,
+        loading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch device counts";
       set({
-        error: error.response?.data?.message || "Failed to fetch device counts",
-        isLoading: false,
+        error: errorMessage,
+        loading: false,
       });
     }
   },

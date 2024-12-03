@@ -3,52 +3,50 @@ import { create } from "zustand";
 import {
   DeviceProfileState,
   DeviceProfileResponse,
-  DeviceProfile,
+  PaginationMeta,
+  ProfileCounts,
 } from "../types/device-profile.types";
 import api from "../utils/axios";
 
-const defaultPagination = {
+const defaultPagination: PaginationMeta = {
   total: 0,
   page: 1,
   pageSize: 10,
   totalPages: 0,
 };
 
-interface ProfileCounts {
-  total_profiles: number;
-  total_devices: number;
-}
-
 const useDeviceProfileStore = create<
   DeviceProfileState & {
-    pagination: typeof defaultPagination;
+    pagination: PaginationMeta;
     counts: ProfileCounts | null;
-    fetchDeviceProfiles: () => Promise<void>;
+    fetchDeviceProfiles: (page?: number, pageSize?: number) => Promise<void>;
     fetchCounts: () => Promise<void>;
     setPage: (page: number, pageSize: number) => void;
   }
->((set, get) => ({
+>((set) => ({
   deviceProfiles: [],
   loading: false,
   error: null,
   pagination: defaultPagination,
   counts: null,
 
-  fetchDeviceProfiles: async () => {
+  fetchDeviceProfiles: async (page = 1, pageSize = 10) => {
     try {
       set({ loading: true, error: null });
-      const response = await api.get<DeviceProfile[]>("/device-profiles");
-      const profiles = response.data;
+      const params = new URLSearchParams({
+        pageNumber: page.toString(),
+        pageSize: pageSize.toString(),
+      });
 
-      set((state) => ({
-        deviceProfiles: profiles,
-        pagination: {
-          ...state.pagination,
-          total: profiles.length,
-          totalPages: Math.ceil(profiles.length / state.pagination.pageSize),
-        },
+      const response = await api.get<DeviceProfileResponse>(
+        `/device-profiles?${params}`
+      );
+
+      set({
+        deviceProfiles: response.data.profiles,
+        pagination: response.data.pagination,
         loading: false,
-      }));
+      });
     } catch (error) {
       set({
         error:
@@ -66,7 +64,6 @@ const useDeviceProfileStore = create<
         ...state.pagination,
         page,
         pageSize,
-        totalPages: Math.ceil(state.deviceProfiles.length / pageSize),
       },
     }));
   },

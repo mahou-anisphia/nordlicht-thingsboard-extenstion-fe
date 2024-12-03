@@ -19,7 +19,7 @@ const DeviceProfileDetailPage: React.FC = () => {
     loading: profileLoading,
     fetchDeviceProfiles,
   } = useDeviceProfileStore();
-  const { devices, isLoading: devicesLoading, fetchDevices } = useDeviceStore();
+  const { devices, loading: devicesLoading, fetchDevices } = useDeviceStore();
   const [profile, setProfile] = useState<DeviceProfile | null>(null);
   const [profileDevices, setProfileDevices] = useState<Device[]>([]);
 
@@ -29,9 +29,13 @@ const DeviceProfileDetailPage: React.FC = () => {
         // Fetch profile data
         await fetchDeviceProfiles();
         // Fetch all devices with profile filter
-        await fetchDevices(1, 100, { profileId: id });
-      } catch (error: any) {
-        message.error(error?.message || "Failed to fetch data");
+        if (id) {
+          await fetchDevices(1, 100, { profileId: id });
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch data";
+        message.error(errorMessage);
       }
     };
 
@@ -64,7 +68,7 @@ const DeviceProfileDetailPage: React.FC = () => {
     navigate(-1);
   };
 
-  const isLoading = profileLoading || devicesLoading;
+  const loading = profileLoading || devicesLoading;
 
   return (
     <div className="p-6">
@@ -87,7 +91,7 @@ const DeviceProfileDetailPage: React.FC = () => {
 
         {profile && <ProfileDetails profile={profile} />}
         <Divider />
-        <ProfileDevicesTable devices={profileDevices} isLoading={isLoading} />
+        <ProfileDevicesTable devices={profileDevices} loading={loading} />
       </Card>
     </div>
   );

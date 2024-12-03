@@ -19,16 +19,16 @@ export interface DeviceProfileState {
   loading: boolean;
   error: string | null;
   counts: ProfileCounts | null;
-  fetchDeviceProfiles: () => Promise<void>;
-  fetchCounts: () => Promise<void>;
+}
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 export interface DeviceProfileResponse {
-  data: DeviceProfile[];
-  meta: {
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-  };
+  profiles: DeviceProfile[];
+  pagination: PaginationMeta;
 }

@@ -7,12 +7,12 @@ import type { ColumnsType } from "antd/es/table";
 
 interface ProfileDevicesTableProps {
   devices: Device[];
-  isLoading: boolean;
+  loading: boolean;
 }
 
 const ProfileDevicesTable: React.FC<ProfileDevicesTableProps> = ({
   devices,
-  isLoading,
+  loading,
 }) => {
   const navigate = useNavigate();
 
@@ -96,7 +96,7 @@ const ProfileDevicesTable: React.FC<ProfileDevicesTableProps> = ({
         dataSource={devices}
         columns={columns}
         rowKey="id"
-        loading={isLoading}
+        loading={loading}
         pagination={{
           showSizeChanger: true,
           showTotal: (total) => `Total ${total} devices`,
