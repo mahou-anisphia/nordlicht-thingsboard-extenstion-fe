@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "@/pages/login";
+import SignInPage from "@/pages/signin";
 import NotFoundPage from "@/pages/notfound";
 import Dashboard from "@/pages/dashboard";
 import DevicesManagementPage from "@/pages/devicesManagement";
@@ -12,12 +13,34 @@ import SettingsPage from "@/pages/settings";
 import ProfilePage from "@/pages/profile";
 import MainLayout from "@/layouts/MainLayout";
 import PrivateRoute from "./PrivateRoute";
+import useAuthStore from "@/store/useAuthStore";
 
 const AppRoutes: React.FC = () => {
+  const { uiPreference } = useAuthStore();
+
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={
+          uiPreference === "old" ? (
+            <LoginPage />
+          ) : (
+            <Navigate to="/signin" replace />
+          )
+        }
+      />
+      <Route
+        path="/signin"
+        element={
+          uiPreference === "new" ? (
+            <SignInPage />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
       {/* Protected Routes with MainLayout */}
       <Route
@@ -40,7 +63,6 @@ const AppRoutes: React.FC = () => {
           path="device-profile/:id"
           element={<DeviceProfileDetailPage />}
         />
-        {/* Add more routes here */}
       </Route>
 
       {/* Catch all route */}

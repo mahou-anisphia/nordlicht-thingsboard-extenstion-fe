@@ -7,8 +7,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  const { isAuthenticated, uiPreference } = useAuthStore();
+  return isAuthenticated ? (
+    <>{children}</>
+  ) : (
+    <Navigate to={uiPreference === "old" ? "/login" : "/signin"} replace />
+  );
 };
 
 export default PrivateRoute;

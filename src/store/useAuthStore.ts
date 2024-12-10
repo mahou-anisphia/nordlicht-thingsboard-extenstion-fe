@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { AuthState, LoginCredentials, LoginResponse } from "../types/auth";
+import {
+  AuthState,
+  LoginCredentials,
+  LoginResponse,
+  UiPreference,
+} from "../types/auth";
 import api from "../utils/axios";
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -7,17 +12,26 @@ const useAuthStore = create<AuthState>((set) => ({
   isLoading: false,
   error: null,
   isAuthenticated: false,
+  uiPreference: (localStorage.getItem("uiPreference") || "old") as UiPreference,
 
   // Rehydrate state from localStorage
   rehydrate: () => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
+    const uiPreference = (localStorage.getItem("uiPreference") ||
+      "old") as UiPreference;
     if (token && user) {
       set({
         user: JSON.parse(user),
         isAuthenticated: true,
+        uiPreference,
       });
     }
+  },
+
+  setUiPreference: (preference: UiPreference) => {
+    localStorage.setItem("uiPreference", preference);
+    set({ uiPreference: preference });
   },
 
   login: async (credentials: LoginCredentials) => {

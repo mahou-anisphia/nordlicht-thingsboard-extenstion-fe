@@ -26,12 +26,16 @@ export interface LoginCredentials {
   password: string;
 }
 
+export type UiPreference = "new" | "old";
+
 export interface AuthState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  uiPreference: UiPreference;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
   rehydrate: () => void;
+  setUiPreference: (preference: UiPreference) => void;
 }
