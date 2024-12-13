@@ -8,6 +8,7 @@ interface TelemetryActionsProps {
   loading: boolean;
   someSelected: boolean;
   allSelected: boolean;
+  deviceId: string;
   onRefresh: () => void;
   onExportSelected: () => void;
   onSelectAll: (checked: boolean) => void;
@@ -17,12 +18,14 @@ const TelemetryActions: React.FC<TelemetryActionsProps> = ({
   loading,
   someSelected,
   allSelected,
+  deviceId,
   onRefresh,
   onExportSelected,
   onSelectAll,
 }) => {
   const [isExportModalVisible, setIsExportModalVisible] = useState(false);
-  const { selectedKeys, selectedPartitions } = useDeviceTelemetryStore();
+  const { selectedKeys, selectedPartitions, exportData } =
+    useDeviceTelemetryStore();
   const hasSelectedPartitions = selectedPartitions.length > 0;
 
   const showExportModal = (mode: "selected" | "all") => {
@@ -38,10 +41,13 @@ const TelemetryActions: React.FC<TelemetryActionsProps> = ({
     }
   };
 
-  const handleExport = (values: ExportConfig) => {
-    console.log("Export configuration:", values);
-    onExportSelected();
-    setIsExportModalVisible(false);
+  const handleExport = async (values: ExportConfig) => {
+    try {
+      await exportData(deviceId, values);
+      setIsExportModalVisible(false);
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
   };
 
   return (

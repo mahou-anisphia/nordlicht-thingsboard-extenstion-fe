@@ -11,22 +11,17 @@ import {
   Tag,
   Space,
   Card,
+  Input,
 } from "antd";
-
 import { formatPartitionTimestamp } from "@/utils/dateUtils";
 import useDeviceTelemetryStore from "@/store/useDeviceTelemetryStore";
+import {
+  ExportConfig,
+  CsvDelimiter,
+  Compression,
+} from "@/types/device-telemetry";
 
 const { Text, Title } = Typography;
-
-export interface ExportConfig {
-  fileFormat: "csv" | "json" | "excel";
-  timeFormat: "iso" | "unix" | "human" | "relative";
-  dataOrganization: "byKey" | "byPartition" | "flat";
-  includeMetadata: boolean;
-  nullValueHandling: "empty" | "null" | "custom" | "skip";
-  csvDelimiter?: "comma" | "semicolon" | "tab" | "pipe";
-  compression: "none" | "zip" | "gzip";
-}
 
 interface ExportConfigModalProps {
   isVisible: boolean;
@@ -48,7 +43,7 @@ const DataOrganizationPreview: React.FC<{
     ExportConfig["dataOrganization"],
     DataOrganizationExample
   > = {
-    byKey: {
+    key: {
       description:
         "Each row represents a timestamp with all sensor readings. Best for analyzing trends over time.",
       columns: [
@@ -84,7 +79,7 @@ const DataOrganizationPreview: React.FC<{
         },
       ],
     },
-    byPartition: {
+    partition: {
       description:
         "Data grouped by time partition. Perfect for analyzing all metrics at specific timestamps.",
       columns: [
@@ -154,13 +149,13 @@ const DataOrganizationPreview: React.FC<{
         {example.description}
       </Text>
       <Table
-        key={format} // Add a key prop to force table re-render when format changes
+        key={format}
         dataSource={example.data}
         columns={example.columns}
         pagination={false}
         size="small"
         className="format-preview-table"
-        rowKey={(record, index) => `${format}-${index}`} // Add unique row keys
+        rowKey={(record, index) => `${format}-${index}`}
       />
     </Card>
   );
@@ -176,7 +171,7 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
   const { telemetryKeys, selectedKeys, selectedPartitions } =
     useDeviceTelemetryStore();
   const [selectedFormat, setSelectedFormat] =
-    useState<ExportConfig["dataOrganization"]>("byKey");
+    useState<ExportConfig["dataOrganization"]>("key");
 
   const handleOk = async () => {
     try {
@@ -266,11 +261,11 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
         initialValues={{
           fileFormat: "csv",
           timeFormat: "human",
-          dataOrganization: "byKey",
+          dataOrganization: "key",
           includeMetadata: true,
           nullValueHandling: "empty",
-          csvDelimiter: "comma",
-          compression: "none",
+          csvDelimiter: CsvDelimiter.COMMA,
+          compression: Compression.NONE,
         }}
       >
         {/* File Format Selection */}
@@ -297,10 +292,8 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
               onChange={(e) => setSelectedFormat(e.target.value)}
               value={selectedFormat}
             >
-              <Radio.Button value="byKey">Group by Key</Radio.Button>
-              <Radio.Button value="byPartition">
-                Group by Partition
-              </Radio.Button>
+              <Radio.Button value="key">Group by Key</Radio.Button>
+              <Radio.Button value="partition">Group by Partition</Radio.Button>
               <Radio.Button value="flat">Flat Structure</Radio.Button>
             </Radio.Group>
             <DataOrganizationPreview format={selectedFormat} />
@@ -318,6 +311,9 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
             </Select.Option>
             <Select.Option value="iso">
               ISO 8601 (2024-02-20T15:30:00Z)
+            </Select.Option>
+            <Select.Option value="unix">
+              UNIX Timestamp (1708444200)
             </Select.Option>
             <Select.Option value="relative">
               Relative Time (2 hours ago)
@@ -341,12 +337,37 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
           label="Null Value Handling"
           tooltip="Specify how null or missing values should be represented"
         >
-          <Select>
+          <Select
+            onChange={(value) =>
+              form.setFieldsValue({
+                nullCustomValue: value === "custom" ? "" : undefined,
+              })
+            }
+          >
             <Select.Option value="empty">Empty String</Select.Option>
             <Select.Option value="null">NULL</Select.Option>
             <Select.Option value="custom">Custom Value</Select.Option>
             <Select.Option value="skip">Skip Row</Select.Option>
           </Select>
+        </Form.Item>
+
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.nullValueHandling !== currentValues.nullValueHandling
+          }
+        >
+          {({ getFieldValue }) =>
+            getFieldValue("nullValueHandling") === "custom" && (
+              <Form.Item
+                name="nullCustomValue"
+                label="Custom Null Value"
+                tooltip="Enter the custom value to use for null/missing values"
+              >
+                <Input placeholder="Enter custom value" />
+              </Form.Item>
+            )
+          }
         </Form.Item>
 
         <Form.Item
@@ -363,10 +384,16 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
                 tooltip="Choose the delimiter for CSV format"
               >
                 <Select>
-                  <Select.Option value="comma">Comma (,)</Select.Option>
-                  <Select.Option value="semicolon">Semicolon (;)</Select.Option>
-                  <Select.Option value="tab">Tab</Select.Option>
-                  <Select.Option value="pipe">Pipe (|)</Select.Option>
+                  <Select.Option value={CsvDelimiter.COMMA}>
+                    Comma (,)
+                  </Select.Option>
+                  <Select.Option value={CsvDelimiter.SEMICOLON}>
+                    Semicolon (;)
+                  </Select.Option>
+                  <Select.Option value={CsvDelimiter.TAB}>Tab</Select.Option>
+                  <Select.Option value={CsvDelimiter.PIPE}>
+                    Pipe (|)
+                  </Select.Option>
                 </Select>
               </Form.Item>
             )
@@ -379,9 +406,8 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
           tooltip="Choose if and how the export should be compressed"
         >
           <Select>
-            <Select.Option value="none">None</Select.Option>
-            <Select.Option value="zip">ZIP</Select.Option>
-            <Select.Option value="gzip">GZIP</Select.Option>
+            <Select.Option value={Compression.NONE}>None</Select.Option>
+            <Select.Option value={Compression.ZIP}>ZIP</Select.Option>
           </Select>
         </Form.Item>
       </Form>

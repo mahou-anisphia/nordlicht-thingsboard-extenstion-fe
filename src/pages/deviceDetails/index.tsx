@@ -83,8 +83,7 @@ const DeviceDetailPage: React.FC = () => {
               loading={loading}
               someSelected={someSelected}
               allSelected={allSelected}
-              selectedKeys={selectedKeys}
-              selectedPartitions={selectedPartitions}
+              deviceId={id || ""}
               onRefresh={handleRefreshTelemetry}
               onExportSelected={handleExportSelected}
               onExportAll={handleExportAll}
