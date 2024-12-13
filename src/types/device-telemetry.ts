@@ -42,7 +42,7 @@ export enum Compression {
 }
 
 export interface ExportConfig {
-  fileFormat: "csv" | "json" | "excel";
+  fileFormat: "csv" | "json" | "xlsx";
   timeFormat: "iso" | "unix" | "human" | "relative";
   dataOrganization: "key" | "partition" | "flat";
   includeMetadata: boolean;

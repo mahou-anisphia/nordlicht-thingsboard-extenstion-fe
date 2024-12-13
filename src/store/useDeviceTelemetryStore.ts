@@ -251,7 +251,7 @@ const useDeviceTelemetryStore = create<
         key,
         partitions: selectedPartitions
           .filter((sp) => sp.key === key)
-          .map((sp) => sp.partition),
+          .map((sp) => parseInt(sp.partition, 10)),
       }));
 
       const requestBody = {
@@ -268,25 +268,74 @@ const useDeviceTelemetryStore = create<
       const response = await api.post(
         `/data-export/device/${deviceId}`,
         requestBody,
-        { responseType: "blob" }
+        {
+          responseType: "blob",
+          timeout: 30000,
+        }
       );
+
+      // First check if we received actual data
+      if (response.data.size === 0) {
+        throw new Error("No data received from server");
+      }
+
+      let blob = response.data;
+
+      // Only process as text if it's JSON format
+      if (config.fileFormat === "json") {
+        // Read the blob to check if it's an error message
+        const blobText = await response.data.text();
+        try {
+          // Try to parse as JSON to check if it's an error message
+          const parsedJson = JSON.parse(blobText);
+          if (parsedJson.error || parsedJson.message) {
+            throw new Error(
+              parsedJson.error || parsedJson.message || "Export failed"
+            );
+          }
+          // Create new blob with proper JSON content type
+          blob = new Blob([blobText], {
+            type: "application/json;charset=utf-8",
+          });
+        } catch (parseError) {
+          // If parsing fails, it means it's actual data, not an error message
+          // Continue with the download process
+        }
+      }
 
       // Generate filename based on config
       const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const extension =
-        config.compression === Compression.NONE
-          ? config.fileFormat
-          : config.compression;
+      let extension = config.fileFormat;
+      if (config.compression === Compression.ZIP) {
+        extension += ".zip";
+      }
 
       const filename = `device-${deviceId}-export-${timestamp}.${extension}`;
 
-      // Download the file
-      saveAs(response.data, filename);
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.download = filename;
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
 
       message.success("Export completed successfully");
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to export data";
+      let errorMessage = "Failed to export data";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message;
+      }
 
       set({ error: errorMessage });
       message.error(errorMessage);

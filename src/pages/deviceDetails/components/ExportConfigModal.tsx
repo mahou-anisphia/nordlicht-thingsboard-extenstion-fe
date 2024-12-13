@@ -277,7 +277,7 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
           <Radio.Group>
             <Radio.Button value="csv">CSV</Radio.Button>
             <Radio.Button value="json">JSON</Radio.Button>
-            <Radio.Button value="excel">Excel</Radio.Button>
+            <Radio.Button value="xlsx">XLSX</Radio.Button>
           </Radio.Group>
         </Form.Item>
 
