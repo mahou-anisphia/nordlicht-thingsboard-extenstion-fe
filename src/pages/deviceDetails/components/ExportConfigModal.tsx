@@ -346,7 +346,7 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
           >
             <Select.Option value="empty">Empty String</Select.Option>
             <Select.Option value="null">NULL</Select.Option>
-            <Select.Option value="custom">Custom Value</Select.Option>
+            {/* <Select.Option value="custom">Custom Value</Select.Option> */}
             <Select.Option value="skip">Skip Row</Select.Option>
           </Select>
         </Form.Item>
@@ -387,13 +387,13 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
                   <Select.Option value={CsvDelimiter.COMMA}>
                     Comma (,)
                   </Select.Option>
-                  <Select.Option value={CsvDelimiter.SEMICOLON}>
+                  {/* <Select.Option value={CsvDelimiter.SEMICOLON}>
                     Semicolon (;)
                   </Select.Option>
                   <Select.Option value={CsvDelimiter.TAB}>Tab</Select.Option>
                   <Select.Option value={CsvDelimiter.PIPE}>
                     Pipe (|)
-                  </Select.Option>
+                  </Select.Option> */}
                 </Select>
               </Form.Item>
             )
@@ -407,7 +407,7 @@ const ExportConfigModal: React.FC<ExportConfigModalProps> = ({
         >
           <Select>
             <Select.Option value={Compression.NONE}>None</Select.Option>
-            <Select.Option value={Compression.ZIP}>ZIP</Select.Option>
+            {/* <Select.Option value={Compression.ZIP}>ZIP</Select.Option> */}
           </Select>
         </Form.Item>
       </Form>
